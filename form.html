@@ -1,0 +1,284 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login form</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+    <style>
+        .overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+            z-index: 9999;
+        }
+        .popup {
+            position: absolute;
+            top: 35%;
+            left: 80%;
+            transform: translate(-50%, -50%);
+            background-color: white;
+            padding: 20px;
+            border: 1px solid #ccc;
+            z-index: 10000;
+        }
+        body{
+            background-image: url('t.jpeg');
+            background-size: cover;
+        }
+        .profile-circle {
+            background-color: #28a745;
+            color: white;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 20px;
+            position: absolute;
+            top: 15px;
+            right: 15px;
+        }
+        footer {
+            position:fixed;
+            bottom: 0;
+            width: 100%;
+            background-color: #f8f9fa; /* Set your preferred background color */
+            padding: 20px 0; /* Adjust padding as needed */
+            text-align: center;
+        }
+        .search-section {
+            background-color: rgba(255, 255, 255, 0.8); /* Semi-transparent white background */
+            padding: 20px;
+            border-radius: 10px;
+            margin-top: 20px;
+        }
+        .form-label {
+            color: #333;
+        }
+        .btn-primary {
+            background-color: #007bff;
+            border-color: #007bff;
+        }
+        .btn-primary:hover {
+            background-color: #0056b3;
+            border-color: #0056b3;
+        }
+        .navbar {
+            background-color: #fff;
+            box-shadow: 0px 2px 10px rgba(0, 0, 0, 0.1);
+        }
+        .nav-link {
+            color: #333 !important;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+    <nav class="navbar navbar-expand-lg navbar-light bg-light">
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+          <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarNav">
+          <ul class="navbar-nav">
+            <li class="nav-item active" style="margin-left: 30px;">
+                <a class="nav-link" href="#" style="color:cornflowerblue;font-family: fantasy;">TRAIN FINDER </style><span class="sr-only"></span></a>
+              </li>
+            <li class="nav-item active" style="margin-left: 30px;">
+              <a class="nav-link" href="#">HOME <span class="sr-only"></span></a>
+            </li>
+            <li class="nav-item" style="margin-left: 50px;">
+              <a class="nav-link" href="#" onclick="showFeaturePopup()">FEATURES</a>
+            </li>
+            <!--<li class="nav-item" style="margin-left: 50px;">
+              <a class="nav-link" href="#">BOOKING</a>
+            </li>-->
+            <li class="nav-item" style="margin-left: 1050px;">
+              <button id="signInBtn" class="btn btn-primary" onclick="showLoginForm()">SIGN IN</button>
+              <div id="profileCircle" class="profile-circle" style="display: none;"></div>
+            </li>
+          </ul>
+        </div>
+      </nav>
+      <div id="loginOverlay" class="overlay" onclick="hideLoginForm()">
+<div id="loginPopup" class="popup" onclick="event.stopPropagation()">
+    <form  id="loginForm" action="datarlwys.php" method="POST" onsubmit="return validateForm()">
+        <div class="mb-3">
+          <label for="exampleInputEmail1" class="form-label">Email address</label>
+          <input type="email" name="email" class="form-control" id="exampleInputEmail1" aria-describedby="emailHelp" required>
+          <div id="emailHelp" class="form-text">We'll never share your email with anyone else.</div>
+        </div>
+        <div class="mb-3">
+          <label for="exampleInputPassword1" class="form-label">Password</label>
+          <input type="password" name="password" class="form-control" id="exampleInputPassword1" required>
+        </div>
+        <div class="mb-3 form-check">
+          <input type="checkbox" class="form-check-input" id="exampleCheck1">
+          <label class="form-check-label" for="exampleCheck1">Check me out</label>
+        </div>
+        <button type="submit" class="btn btn-primary" id="submitBtn" onclick="enableSearchButton()" >Submit</button>
+      </form>
+      </div>
+      
+      </div>
+      <div id="featureOverlay" class="overlay" onclick="hideFeaturePopup()">
+        <div id="featurePopup" class="popup" onclick="event.stopPropagation()">
+            <ul>
+            <h1> Features</h1>
+            <li>Find Your Train Details</li>
+        <li>Search and discover trains to your desired destinations effortlessly.</li>
+        <li>Available 24/7</li>
+        <p style="font-family: cursive;margin: 20px;">ENJOY SEAMLESS EXPERIENCE!</p>
+        </ul>
+            <button class="btn btn-primary" onclick="hideFeaturePopup()">Close</button>
+        </div>
+    </div>
+    <!----
+      <div class="container mt-5" style="background-color: rgba(255, 255, 255, 0.8); width:650px;height:200px;margin:15px">
+        <h2 style="color: black;font-family: Cambria, Cochin, Georgia, Times, 'Times New Roman', serif;">Train Search</h2>
+
+        <form id="searchForm" method="POST" action="search_trains.php" style="box-shadow: 2px;">
+            <div class="mb-3" class="search-section">
+                <label for="TrainNo" class="form-label" style="color:black;font-family:Cambria, Cochin, Georgia, Times, 'Times New Roman', serif;">Train No</label>
+                <input type="text" class="form-control" id="TrainNo" name="TrainNo" placeholder="Enter Train No" style="width: 615px;">
+            </div>
+            <button type="submit" class="btn btn-primary" id="searchBtn" >Search</button>
+        </form>
+        </div>
+        <div class="container mt-5" style="margin-right:400px;">
+          <div >
+              <div class="col-md-6">
+                  <div class="search-section">
+                      <h2 style="font-family: Cambria, Cochin, Georgia, Times, 'Times New Roman', serif;">Search Feature</h2>
+                      <form id="search" method="POST" action="searchbwstations.php" style="box-shadow: 2px;">
+                      <div class="mb-3">
+                          <label for="stationCode" class="form-label" style="font-family: Cambria, Cochin, Georgia, Times, 'Times New Roman', serif;">Search by Station Code</label>
+                          <input type="text" class="form-control" id="stationCode" name="stationCode" placeholder="Enter Station Code" >
+                      </div>
+                      
+                      <button type="submit" class="btn btn-primary" >Search</button>
+                      </form>
+                  </div>
+              </div>
+          </div>
+      </div>
+      <div class="container mt-5" style="margin-left: 5px;">
+        <div >
+            <div class="col-md-6">
+                <div class="search-section">
+                    <h2 style="font-family: Cambria, Cochin, Georgia, Times, 'Times New Roman', serif;">Search Trains by Source and Destination</h2>
+                    <form id="search" method="POST" action="sourcetodest.php" style="box-shadow: 2px;">
+                    <div class="mb-3">
+                        <label for="sourceStationName" class="form-label" style="font-family: Cambria, Cochin, Georgia, Times, 'Times New Roman', serif;">Source Station</label>
+                        <input type="text" class="form-control" id="sourceStationName" name="sourceStationName" placeholder="Enter Source Station">
+                    </div>
+                    <div class="mb-3">
+                        <label for="DestinationStationName" class="form-label" style="font-family: Cambria, Cochin, Georgia, Times, 'Times New Roman', serif;">Destination Station</label>
+                        <input type="text" class="form-control" id="DestinationStationName" name="DestinationStationName" placeholder="Enter Destination Station">
+                    </div>
+                    <button type="submit" class="btn btn-primary">Search</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+<!-- Combined Search form -->
+<div class="container mt-5" style="background-color: rgba(255, 255, 255, 0.8);width: 600px;height: 800px;margin-left: 30px;">
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            <div class="search-box">
+                <h2 style="color: #007bff;margin: 20px;">Train Search</h2>
+                <!-- Combined Search form -->
+                <form id="searchByTrainForm" method="POST" action="search_trains.php">
+                    <div class="mb-3">
+                        <label for="TrainNo" class="form-label">Search by Train Number</label>
+                        <input type="text" class="form-control" id="TrainNo" name="TrainNo" placeholder="Enter Train No">
+                    </div>
+                    <button type="submit" class="btn btn-primary">Search</button>
+                </form>
+
+                <form id="searchByStationCodeForm" method="POST" action="searchbwstations.php">
+                    <div class="mb-3">
+                        <label for="stationCode" class="form-label">Search by Station Code</label>
+                        <input type="text" class="form-control" id="stationCode" name="stationCode" placeholder="Enter Station Code">
+                    </div>
+                    <button type="submit" class="btn btn-primary">Search</button>
+                </form>
+
+                <form id="searchBySourceDestForm" method="POST" action="sourcetodest.php">
+                    <div class="mb-3">
+                        <label for="sourceStationName" class="form-label">Source Station</label>
+                        <input type="text" class="form-control" id="sourceStationName" name="sourceStationName" placeholder="Enter Source Station">
+                    </div>
+                    <div class="mb-3">
+                        <label for="DestinationStationName" class="form-label">Destination Station</label>
+                        <input type="text" class="form-control" id="DestinationStationName" name="DestinationStationName" placeholder="Enter Destination Station">
+                    </div>
+                    <button type="submit" class="btn btn-primary">Search</button>
+                </form>
+                <form id="arrtodep" method="POST" action="arrdep.php">
+                <div class="mb-3">
+                    <label for="Arrivaltime" class="form-label" style="margin: 10px;">Arrival Time</label>
+                    <input type="time" class="form-control" id="Arrivaltime" name="Arrivaltime">
+                </div>
+                <!-- Search by Departure Time -->
+                <div class="mb-3">
+                    <label for="Departuretime" class="form-label">Departure Time</label>
+                    <input type="time" class="form-control" id="Departuretime" name="Departuretime">
+                </div>
+                <!-- Submit Button -->
+                <button type="submit" class="btn btn-primary">Search</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+      <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+
+<script>
+    // JavaScript to handle showing the login popup
+    function showLoginForm() {
+        document.getElementById('loginOverlay').style.display = 'block';
+        document.getElementById('loginPopup').style.display = 'block';
+    }
+    
+    // JavaScript to handle hiding the login popup
+    function hideLoginForm() {
+        document.getElementById('loginOverlay').style.display = 'none';
+        document.getElementById('loginPopup').style.display = 'none';
+    }
+    function enableSearchButton() {
+        //document.getElementById('searchBtn').disabled = false;
+        document.getElementById('signInBtn').style.display = 'none'; // Hide the sign in button
+        var email = document.getElementById('exampleInputEmail1').value;
+        if (email) {
+            document.getElementById('profileCircle').innerText = email.charAt(0).toUpperCase(); // Set the first letter of the email in the profile circle
+            document.getElementById('profileCircle').style.display = 'flex';
+            document.getElementById('stationCode').disabled = false;
+        document.getElementById('searchBtn').disabled = false; // Show the profile circle
+        }
+    }
+    function showFeaturePopup() {
+    document.getElementById('featureOverlay').style.display = 'block';
+    document.getElementById('featurePopup').style.display = 'block';
+}
+
+// JavaScript to handle hiding the feature popup
+function hideFeaturePopup() {
+    document.getElementById('featureOverlay').style.display = 'none';
+    document.getElementById('featurePopup').style.display = 'none';
+}
+
+          
+</script>
+
+</body>
+</html>
